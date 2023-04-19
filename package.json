@@ -1,0 +1,47 @@
+{
+  "name": "open-vits-bot",
+  "description": "语音合成机器人",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "AGPL-3.0",
+  "author": "t4wefan <guanghoushi@gmail.com@qq.com>",
+  "contributors": [
+    "t4wefan <guanghoushi@gmail.com@qq.com>",
+    "initencounter <2911583893@qq.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/initialencounter/koishi-plugin-open-vits.git"
+  },
+  "bugs": {
+    "url": "https://github.com/initialencounter/koishi-plugin-open-vits/issues"
+  },
+  "homepage": "https://github.com/initialencounter/koishi-plugin-open-vits#readme",
+  "scripts": {},
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "plugin",
+    "vits",
+    "service"
+  ],
+  "dependencies": {
+    "@koishijs/plugin-adapter-onebot": "^5.6.6",
+    "@koishijs/plugin-console": "^5.6.1",
+    "@koishijs/plugin-echo": "^2.2.3",
+    "@koishijs/plugin-sandbox": "^3.0.0",
+    "koishi": "^4.12.4",
+    "koishi-plugin-open-vits": "^0.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "esbuild": "^0.17.16",
+    "esbuild-register": "^3.4.2",
+    "typescript": "^5.0.4"
+  }
+}
