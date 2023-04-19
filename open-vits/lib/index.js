@@ -70,7 +70,7 @@ class Vits extends koishi_1.Service {
 399899914
 `;
     Vits.Config = koishi_1.Schema.object({
-        endpoint: koishi_1.Schema.string().required().description('vits服务器地址'),
+        endpoint: koishi_1.Schema.string().required().default('https://api.vits.t4wefan.pub').description('vits服务器地址'),
         speaker_id: koishi_1.Schema.number().default(3).description('speaker_id'),
         max_length: koishi_1.Schema.number().default(256).description('最大长度'),
         waiting: koishi_1.Schema.boolean().default(true).description('消息反馈，会发送思考中...'),

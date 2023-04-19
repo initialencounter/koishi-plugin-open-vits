@@ -1,11 +1,9 @@
 import { Context } from 'koishi'
 import console from '@koishijs/plugin-console'
 import * as sandbox from '@koishijs/plugin-sandbox'
-
+import market from '@koishijs/plugin-market'
 import onebot from '@koishijs/plugin-adapter-onebot'
-
-import open_vits from './open-vits'
-
+import open_vits from 'koishi-plugin-open-vits'
 // 创建一个 Koishi 应用
 const ctx = new Context({
   port: 5140,
@@ -13,14 +11,14 @@ const ctx = new Context({
 // 使用 OneBot 适配器的机器人
 ctx.plugin(onebot, {
     protocol: 'ws',
-    selfId: 'your QQ account',
-    endpoint: 'your ws addr',
+    selfId: '3111720341',
+    endpoint: 'ws://127.0.0.1:32333',
   })
 
 // 启用上述插件
 ctx.plugin(console)     // 提供控制台
-// ctx.plugin(sandbox)     // 提供调试沙盒
-
+ctx.plugin(sandbox)     // 提供调试沙盒
+ctx.plugin(market)      // 提供插件市场服务
 // 启用glm-bot
 ctx.plugin(open_vits,{
     endpoint: 'http://127.0.0.1:23456',
