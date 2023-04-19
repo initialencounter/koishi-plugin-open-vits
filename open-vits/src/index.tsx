@@ -91,7 +91,7 @@ namespace Vits {
   }
   export const Config =
     Schema.object({
-      endpoint: Schema.string().required().default('https://api.vits.t4wefan.pub').description('vits服务器地址'),
+      endpoint: Schema.string().default('https://api.vits.t4wefan.pub').description('vits服务器地址'),
       speaker_id: Schema.number().default(3).description('speaker_id'),
       max_length: Schema.number().default(256).description('最大长度'),
       waiting: Schema.boolean().default(true).description('消息反馈，会发送思考中...'),
