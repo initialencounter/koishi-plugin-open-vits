@@ -28,6 +28,8 @@ endpoint: 'ws://127.0.0.1:32333'
 ```
 修改为go-cqhttp的正向ws服务地址
 
+
+
 * 3.安装[koishi](https://koishi.chat)依赖
 
 在本项目根目录下运行
@@ -35,7 +37,14 @@ endpoint: 'ws://127.0.0.1:32333'
 npm i
 ```
 
-* 4.启动机器人
+* 4.配置vits
+将index.ts中的
+```
+endpoint: 'https://api.vits.t4wefan.pub',
+```
+修改为本地部署的vits地址
+
+* 5.启动机器人
 ```
 node -r esbuild-register .
 ```
