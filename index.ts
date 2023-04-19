@@ -1,7 +1,6 @@
 import { Context } from 'koishi'
 import console from '@koishijs/plugin-console'
 import * as sandbox from '@koishijs/plugin-sandbox'
-import market from '@koishijs/plugin-market'
 import onebot from '@koishijs/plugin-adapter-onebot'
 import open_vits from 'koishi-plugin-open-vits'
 // 创建一个 Koishi 应用
@@ -18,10 +17,9 @@ ctx.plugin(onebot, {
 // 启用上述插件
 ctx.plugin(console)     // 提供控制台
 ctx.plugin(sandbox)     // 提供调试沙盒
-ctx.plugin(market)      // 提供插件市场服务
 // 启用glm-bot
 ctx.plugin(open_vits,{
-    endpoint: 'http://127.0.0.1:23456',
+    endpoint: 'https://api.vits.t4wefan.pub',
     speaker_id: 3,
     max_length: 1024,
     waiting: true,
