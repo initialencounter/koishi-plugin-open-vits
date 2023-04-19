@@ -73,7 +73,7 @@ QQ群399899914
 ## Acknowledgments
 
 * [t4wefan](https://github.com/t4wefan)后端及插件贡献者
-* [vits-simple-api](https://github.com/Artrajz/vits-simple-api)
+* [vits-simple-api](https://github.com/Artrajz/vits-simple-api)A simple vits API | MoeGoe API
 * [koishi](https://koishi.chat)跨平台、可扩展、高性能的机器人框架
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
