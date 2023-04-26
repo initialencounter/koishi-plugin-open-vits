@@ -1,7 +1,7 @@
 {
   "name": "open-vits-bot",
   "description": "语音合成机器人",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
