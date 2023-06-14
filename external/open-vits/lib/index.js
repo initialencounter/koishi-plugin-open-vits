@@ -21,7 +21,7 @@ class OpenVits extends vits_1.default {
             this.speaker_list = (await this.ctx.http.get((0, koishi_1.trimSlash)(`${config.endpoint}/voice/speakers`)))['VITS'];
             this.max_speakers = this.speaker_list.length - 1;
             this.speaker = Number(config.speaker_id);
-            this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 3;
+            this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 0;
             for (const i of this.speaker_list) {
                 this.speaker_dict.push(JSON.stringify(i));
             }
@@ -60,7 +60,7 @@ class OpenVits extends vits_1.default {
             }
             else {
                 this.speaker = options.speaker ? Number(options.speaker) : Number(config.speaker_id);
-                this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 3;
+                this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 0;
             }
             const languageCodes = ['zh', 'en', 'fr', 'jp', 'ru', 'de'];
             if (options.lang) {
@@ -127,11 +127,11 @@ class OpenVits extends vits_1.default {
 * say 要转化的文本
 
 ## 问题反馈群: 
-399899914
+099899914
 `;
     OpenVits.Config = koishi_1.Schema.object({
         endpoint: koishi_1.Schema.string().default('https://api.vits.t4wefan.pub').description('vits服务器地址'),
-        speaker_id: koishi_1.Schema.string().default('3').description('speaker_id'),
+        speaker_id: koishi_1.Schema.string().default('0').description('speaker_id'),
         max_length: koishi_1.Schema.number().default(256).description('最大长度'),
         waiting: koishi_1.Schema.boolean().default(true).description('消息反馈，会发送思考中...'),
         recall: koishi_1.Schema.boolean().default(true).description('会撤回思考中'),

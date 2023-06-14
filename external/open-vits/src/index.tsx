@@ -25,7 +25,7 @@ class OpenVits extends Vits {
       this.speaker_list = (await this.ctx.http.get(trimSlash(`${config.endpoint}/voice/speakers`)))['VITS']
       this.max_speakers = this.speaker_list.length - 1
       this.speaker = Number(config.speaker_id)
-      this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 3
+      this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 0
       for(const i of this.speaker_list){
         this.speaker_dict.push(JSON.stringify(i))
       }
@@ -64,7 +64,7 @@ class OpenVits extends Vits {
           })()
         } else {
           this.speaker = options.speaker ? Number(options.speaker) : Number(config.speaker_id)
-          this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 3
+          this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 0
         }
         const languageCodes = ['zh', 'en', 'fr', 'jp', 'ru', 'de']
         if (options.lang) {
@@ -131,7 +131,7 @@ namespace OpenVits {
 * say 要转化的文本
 
 ## 问题反馈群: 
-399899914
+099899914
 `
   export interface Result {
     input: string
@@ -150,7 +150,7 @@ namespace OpenVits {
   export const Config =
     Schema.object({
       endpoint: Schema.string().default('https://api.vits.t4wefan.pub').description('vits服务器地址'),
-      speaker_id: Schema.string().default('3').description('speaker_id'),
+      speaker_id: Schema.string().default('0').description('speaker_id'),
       max_length: Schema.number().default(256).description('最大长度'),
       waiting: Schema.boolean().default(true).description('消息反馈，会发送思考中...'),
       recall: Schema.boolean().default(true).description('会撤回思考中'),
