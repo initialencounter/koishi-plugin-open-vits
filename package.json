@@ -1,6 +1,7 @@
 {
   "name": "open-vits-bot",
   "description": "语音合成机器人",
+  "private": "true",
   "version": "1.0.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -22,9 +23,6 @@
     "url": "https://github.com/initialencounter/koishi-plugin-open-vits/issues"
   },
   "homepage": "https://github.com/initialencounter/koishi-plugin-open-vits#readme",
-  "scripts": {
-    "build:console": "koishi-console build"
-  },
   "keywords": [
     "chatbot",
     "koishi",
@@ -32,18 +30,47 @@
     "vits",
     "service"
   ],
-  "dependencies": {
-    "@koishijs/plugin-adapter-onebot": "^5.6.6",
-    "@koishijs/plugin-console": "^5.6.1",
-    "@koishijs/plugin-echo": "^2.2.3",
-    "@koishijs/plugin-sandbox": "^3.0.0",
-    "koishi": "^4.12.4",
-    "koishi-plugin-open-vits": "^1.0.2"
+  "workspaces": [
+    "external/*"
+  ],
+  "scripts": {
+    "start:build": "node -r esbuild-register .",
+    "new": "koishi-scripts new",
+    "build": "yakumo build",
+    "dep": "yakumo upgrade",
+    "dev": "cross-env NODE_ENV=development koishi start -r esbuild-register -r yml-register",
+    "start": "koishi start"
   },
   "devDependencies": {
-    "@types/node": "^18.15.11",
-    "esbuild": "^0.17.16",
-    "esbuild-register": "^3.4.2",
-    "typescript": "^5.0.4"
+    "@koishijs/client": "^5.11.0",
+    "@koishijs/plugin-hmr": "^1.2.0",
+    "@koishijs/scripts": "^4.1.5",
+    "@types/node": "^18.16.9",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.17.19",
+    "esbuild-register": "npm:@shigma/esbuild-register@^1.1.1",
+    "typescript": "^5.0.4",
+    "yakumo": "^0.3.13",
+    "yakumo-esbuild": "^0.3.22",
+    "yakumo-esbuild-yaml": "^0.3.1",
+    "yakumo-tsc": "^0.3.9",
+    "yml-register": "^1.1.0"
+  },
+  "dependencies": {
+    "@koishijs/plugin-adapter-discord": "^3.6.1",
+    "@koishijs/plugin-adapter-onebot": "^5.7.1",
+    "@koishijs/plugin-admin": "^1.3.0",
+    "@koishijs/plugin-analytics": "^1.0.3",
+    "@koishijs/plugin-commands": "^3.2.1",
+    "@koishijs/plugin-config": "^2.1.0",
+    "@koishijs/plugin-console": "^5.11.0",
+    "@koishijs/plugin-echo": "^2.2.3",
+    "@koishijs/plugin-help": "2.2.3",
+    "@koishijs/plugin-market": "^2.0.4",
+    "@koishijs/plugin-sandbox": "^3.1.6",
+    "@koishijs/translator": "^1.0.0",
+    "koishi": "^4.13.1",
+    "koishi-plugin-gocqhttp": "^3.7.2",
+    "koishi-plugin-puppeteer": "^3.5.0"
   }
 }

@@ -1,0 +1,20 @@
+port: 5140
+maxPort: 5149
+host: 0.0.0.0
+plugins:
+  group:basic:
+    config: {}
+    console: {}
+    sandbox: {}
+    market:2ww8wa:
+      registry:
+        endpoint: https://registry.npmmirror.com
+      search:
+        endpoint: https://registry.koishi.chat/index.json
+    ~puppeteer:j7wxcq: {}
+    help:eidawx: {}
+  group:adapter:
+    ~adapter-onebot: {}
+    gocqhttp: {}
+  open-vits:fm76v0: {}
+  test:wqp5s8: {}
