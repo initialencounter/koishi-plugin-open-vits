@@ -12,24 +12,19 @@ exports.logger = new koishi_1.Logger(exports.name);
 class OpenVits extends vits_1.default {
     constructor(ctx, config) {
         super(ctx);
-        this.speaker = Number(config.speaker_id);
-        this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 3;
         this.recall_time = config.recall_time;
         this.max_length = config.max_length;
         this.endpoint = config.endpoint;
-        this.speaker_dict = {};
+        this.speaker_dict = [];
         ctx.i18n.define('zh', require('./locales/zh'));
         ctx.on('ready', async () => {
             this.speaker_list = (await this.ctx.http.get((0, koishi_1.trimSlash)(`${config.endpoint}/voice/speakers`)))['VITS'];
             this.max_speakers = this.speaker_list.length - 1;
-            this.speaker_list.forEach((i, id) => {
-                let speaker_name = Object.values(i)[0];
-                const tail_id = Object.values(i)[0].indexOf('（');
-                if (tail_id > -1) {
-                    speaker_name = speaker_name.slice(0, tail_id);
-                }
-                this.speaker_dict[String(id)] = speaker_name;
-            });
+            this.speaker = Number(config.speaker_id);
+            this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 3;
+            for (const i of this.speaker_list) {
+                this.speaker_dict.push(JSON.stringify(i));
+            }
         });
         // 记录发送消息的messageid
         ctx.on('send', (session) => {
@@ -52,8 +47,16 @@ class OpenVits extends vits_1.default {
             }
             // 判断speaker_id是否合法
             const reg = /^\d+(\d+)?$/;
-            if ((!reg.test(options.speaker)) && Object.values(this.speaker_dict).indexOf(options.speaker) > -1) {
-                this.speaker = Object.values(this.speaker_dict).indexOf(options.speaker);
+            if ((!reg.test(options.speaker))) {
+                this.speaker = (() => {
+                    for (const i in this.speaker_dict) {
+                        const id = this.speaker_dict[i].indexOf(options.speaker);
+                        if (id > -1) {
+                            return id;
+                        }
+                    }
+                    return this.speaker;
+                })();
             }
             else {
                 this.speaker = options.speaker ? Number(options.speaker) : Number(config.speaker_id);

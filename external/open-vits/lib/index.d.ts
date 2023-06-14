@@ -8,7 +8,7 @@ declare class OpenVits extends Vits {
     speaker: number;
     speaker_list: Dict[];
     max_speakers: number;
-    speaker_dict: Dict;
+    speaker_dict: string[];
     recall_time: number;
     max_length: number;
     endpoint: string;
