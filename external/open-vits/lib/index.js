@@ -12,6 +12,7 @@ exports.logger = new koishi_1.Logger(exports.name);
 class OpenVits extends vits_1.default {
     constructor(ctx, config) {
         super(ctx);
+        this.config = config;
         this.recall_time = config.recall_time;
         this.max_length = config.max_length;
         this.endpoint = config.endpoint;
@@ -121,7 +122,7 @@ class OpenVits extends vits_1.default {
             return (0, koishi_1.h)(String(await this.ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/error_too_long.txt', { responseType: "text" })));
         }
         try {
-            const url = (0, koishi_1.trimSlash)(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=ogg`);
+            const url = (0, koishi_1.trimSlash)(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=${this.config.format}&lang=${this.config.lang}&length=${this.config.speech_length} `);
             const response = await this.ctx.http.get(url, { responseType: 'arraybuffer' });
             return koishi_1.h.audio(response, 'audio/mpeg');
         }
@@ -152,6 +153,22 @@ class OpenVits extends vits_1.default {
         recall: koishi_1.Schema.boolean().default(true).description('会撤回思考中'),
         recall_time: koishi_1.Schema.number().default(5000).description('撤回的时间'),
         translator: koishi_1.Schema.boolean().default(true).description('将启用翻译'),
+        format: koishi_1.Schema.union([
+            koishi_1.Schema.const("ogg"),
+            koishi_1.Schema.const("wav"),
+            koishi_1.Schema.const("amr"),
+            koishi_1.Schema.const("mp3")
+        ])
+            .default('ogg').description("音频格式"),
+        lang: koishi_1.Schema.union([
+            koishi_1.Schema.const("mix"),
+            koishi_1.Schema.const("zh"),
+            koishi_1.Schema.const("en"),
+            koishi_1.Schema.const("jp"),
+            koishi_1.Schema.const("auto")
+        ])
+            .default('mix').description("语言"),
+        speech_length: koishi_1.Schema.number().default(1.4).description('speech lenght'),
     });
 })(OpenVits || (OpenVits = {}));
 exports.default = OpenVits;

@@ -4,6 +4,7 @@ export declare const using: string[];
 export declare const name: string;
 export declare const logger: Logger;
 declare class OpenVits extends Vits {
+    private config;
     temp_msg: string;
     speaker: number;
     speaker_list: Dict[];
@@ -37,6 +38,9 @@ declare namespace OpenVits {
         recall_time: number;
         speaker_id: string;
         translator: boolean;
+        format: string;
+        lang: string;
+        speech_length: number;
     }
     const Config: Schema<Schemastery.ObjectS<{
         endpoint: Schema<string, string>;
@@ -46,6 +50,9 @@ declare namespace OpenVits {
         recall: Schema<boolean, boolean>;
         recall_time: Schema<number, number>;
         translator: Schema<boolean, boolean>;
+        format: Schema<"ogg" | "wav" | "amr" | "mp3", "ogg" | "wav" | "amr" | "mp3">;
+        lang: Schema<"zh" | "mix" | "en" | "jp" | "auto", "zh" | "mix" | "en" | "jp" | "auto">;
+        speech_length: Schema<number, number>;
     }>, Schemastery.ObjectT<{
         endpoint: Schema<string, string>;
         speaker_id: Schema<string, string>;
@@ -54,6 +61,9 @@ declare namespace OpenVits {
         recall: Schema<boolean, boolean>;
         recall_time: Schema<number, number>;
         translator: Schema<boolean, boolean>;
+        format: Schema<"ogg" | "wav" | "amr" | "mp3", "ogg" | "wav" | "amr" | "mp3">;
+        lang: Schema<"zh" | "mix" | "en" | "jp" | "auto", "zh" | "mix" | "en" | "jp" | "auto">;
+        speech_length: Schema<number, number>;
     }>>;
 }
 export default OpenVits;

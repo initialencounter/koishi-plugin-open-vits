@@ -14,7 +14,7 @@ class OpenVits extends Vits {
   recall_time: number
   max_length: number
   endpoint: string
-  constructor(ctx: Context, config: OpenVits.Config) {
+  constructor(ctx: Context, private config: OpenVits.Config) {
     super(ctx)
     this.recall_time = config.recall_time
     this.max_length = config.max_length
@@ -58,10 +58,10 @@ class OpenVits extends Vits {
         if (input.length > config.max_length) {
           if (config.endpoint === "https://api.vits.t4wefan.pub") {
             return String(h('at', { id: (session.userId) })) + (String(await this.ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/error_too_long.txt', { responseType: "text" })));
-        } else {
+          } else {
             return session.text("commands.say.message.too-long")
           }
-          }
+        }
         // 判断speaker_id是否合法
         const reg: RegExp = /^\d+(\d+)?$/
         if ((!reg.test(options.speaker))) {
@@ -123,7 +123,7 @@ class OpenVits extends Vits {
       return h(String(await this.ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/error_too_long.txt', { responseType: "text" })));
     }
     try {
-      const url: string = trimSlash(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=ogg`)
+      const url: string = trimSlash(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=${this.config.format}&lang=${this.config.lang}&length=${this.config.speech_length} `)
       const response: Buffer = await this.ctx.http.get(url, { responseType: 'arraybuffer' });
       return h.audio(response, 'audio/mpeg')
     } catch (e) {
@@ -158,6 +158,9 @@ namespace OpenVits {
     recall_time: number
     speaker_id: string
     translator: boolean
+    format: string
+    lang: string
+    speech_length: number
   }
   export const Config =
     Schema.object({
@@ -168,6 +171,21 @@ namespace OpenVits {
       recall: Schema.boolean().default(true).description('会撤回思考中'),
       recall_time: Schema.number().default(5000).description('撤回的时间'),
       translator: Schema.boolean().default(true).description('将启用翻译'),
+      format: Schema.union([
+        Schema.const("ogg"),
+        Schema.const("wav"),
+        Schema.const("amr"),
+        Schema.const("mp3")])
+        .default('ogg').description("音频格式"),
+      lang: Schema.union([
+        Schema.const("mix"),
+        Schema.const("zh"),
+        Schema.const("en"),
+        Schema.const("jp"),
+        Schema.const("auto")
+      ])
+        .default('mix').description("语言"),
+      speech_length: Schema.number().default(1.4).description('speech lenght'),
     })
 
 }
