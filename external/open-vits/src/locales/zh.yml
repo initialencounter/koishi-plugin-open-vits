@@ -12,3 +12,4 @@ commands:
       </>
     message:
       too-long: 文本消息过长
+      waiting: 计算中...

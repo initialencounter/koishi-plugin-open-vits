@@ -26,7 +26,7 @@ class OpenVits extends Vits {
       this.max_speakers = this.speaker_list.length - 1
       this.speaker = Number(config.speaker_id)
       this.speaker = ((this.speaker < this.max_speakers) && this.speaker > -1) ? this.speaker : 0
-      for(const i of this.speaker_list){
+      for (const i of this.speaker_list) {
         this.speaker_dict.push(JSON.stringify(i))
       }
     })
@@ -38,25 +38,37 @@ class OpenVits extends Vits {
       .option('speaker', '-s <speaker:string>', { fallback: config.speaker_id })
       .option('lang', '-l <lang:string>')
       .action(async ({ session, options }, input) => {
-        await session.send((String(await ctx.http.get('https://drive.t4wefan.pub/d/blockly/open-vits/help/waiting.txt', { responseType: "text" })) + String(options.lang ? options.lang : 'zh')));
+
+        if (config.endpoint === "https://api.vits.t4wefan.pub") {
+          await session.send((String(await ctx.http.get('https://drive.t4wefan.pub/d/blockly/open-vits/help/waiting.txt', { responseType: "text" })) + String(options.lang ? options.lang : 'zh')));
+        } else {
+          await session.send(session.text("commands.say.message.waiting"))
+        }
         // 判断是否需要撤回
         if (config.recall) {
           this.recall(session, this.temp_msg)
         }
         if (!input) {
-          return (String(h('at', { id: (session.userId) })) + String(await ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/help.txt', { responseType: "text" })));
+          if (config.endpoint === "https://api.vits.t4wefan.pub") {
+            return (String(h('at', { id: (session.userId) })) + String(await ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/help.txt', { responseType: "text" })));
+          } else {
+            return session.execute("help say")
+          }
         }
-
         if (input.length > config.max_length) {
-          return String(h('at', { id: (session.userId) })) + (String(await this.ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/error_too_long.txt', { responseType: "text" })));
-        }
+          if (config.endpoint === "https://api.vits.t4wefan.pub") {
+            return String(h('at', { id: (session.userId) })) + (String(await this.ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/error_too_long.txt', { responseType: "text" })));
+        } else {
+            return session.text("commands.say.message.too-long")
+          }
+          }
         // 判断speaker_id是否合法
         const reg: RegExp = /^\d+(\d+)?$/
         if ((!reg.test(options.speaker))) {
-          this.speaker = (()=>{
-            for(const i in this.speaker_dict){
-              const id:number = this.speaker_dict[i].indexOf(options.speaker)
-              if(id>-1){
+          this.speaker = (() => {
+            for (const i in this.speaker_dict) {
+              const id: number = this.speaker_dict[i].indexOf(options.speaker)
+              if (id > -1) {
                 return id
               }
             }
