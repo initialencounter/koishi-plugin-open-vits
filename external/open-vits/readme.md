@@ -13,8 +13,8 @@
 
 
 ## 更新日志
-* v1.6.0 新增 lang format length 参数
-* v1.5.6 更改本地化文本 close #3
+* v1.6.0 新增 lang format length 参数 (close #4)
+* v1.5.6 更改本地化文本 (close #3)
 * v1.4.1 更改speaker选项缩写
 * v1.4.0 重写服务vits
 * V1.3.0 重写服务vits

@@ -38,15 +38,16 @@ class OpenVits extends Vits {
       .option('speaker', '-s <speaker:string>', { fallback: config.speaker_id })
       .option('lang', '-l <lang:string>')
       .action(async ({ session, options }, input) => {
-
-        if (config.endpoint === "https://api.vits.t4wefan.pub") {
-          await session.send((String(await ctx.http.get('https://drive.t4wefan.pub/d/blockly/open-vits/help/waiting.txt', { responseType: "text" })) + String(options.lang ? options.lang : 'zh')));
-        } else {
-          await session.send(session.text("commands.say.message.waiting"))
-        }
-        // 判断是否需要撤回
-        if (config.recall) {
-          this.recall(session, this.temp_msg)
+        if (config.waiting) {
+          if (config.endpoint === "https://api.vits.t4wefan.pub") {
+            await session.send((String(await ctx.http.get('https://drive.t4wefan.pub/d/blockly/open-vits/help/waiting.txt', { responseType: "text" })) + String(options.lang ? options.lang : 'zh')));
+          } else {
+            await session.send(session.text("commands.say.message.waiting"))
+          }
+          // 判断是否需要撤回
+          if (config.recall) {
+            this.recall(session, this.temp_msg)
+          }
         }
         if (!input) {
           if (config.endpoint === "https://api.vits.t4wefan.pub") {

@@ -16,5 +16,6 @@ plugins:
   group:adapter:
     ~adapter-onebot: {}
     gocqhttp: {}
-  open-vits:fm76v0: {}
+  open-vits:fm76v0:
+    endpoint: https://api.vits.t4wefan.pub12
   test:wqp5s8: {}
