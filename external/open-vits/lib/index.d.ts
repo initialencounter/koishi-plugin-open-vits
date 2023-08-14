@@ -51,7 +51,7 @@ declare namespace OpenVits {
         recall_time: Schema<number, number>;
         translator: Schema<boolean, boolean>;
         format: Schema<"ogg" | "wav" | "amr" | "mp3", "ogg" | "wav" | "amr" | "mp3">;
-        lang: Schema<"zh" | "mix" | "en" | "jp" | "auto", "zh" | "mix" | "en" | "jp" | "auto">;
+        lang: Schema<"zh" | "jp" | "mix" | "en" | "auto", "zh" | "jp" | "mix" | "en" | "auto">;
         speech_length: Schema<number, number>;
     }>, Schemastery.ObjectT<{
         endpoint: Schema<string, string>;
@@ -62,7 +62,7 @@ declare namespace OpenVits {
         recall_time: Schema<number, number>;
         translator: Schema<boolean, boolean>;
         format: Schema<"ogg" | "wav" | "amr" | "mp3", "ogg" | "wav" | "amr" | "mp3">;
-        lang: Schema<"zh" | "mix" | "en" | "jp" | "auto", "zh" | "mix" | "en" | "jp" | "auto">;
+        lang: Schema<"zh" | "jp" | "mix" | "en" | "auto", "zh" | "jp" | "mix" | "en" | "auto">;
         speech_length: Schema<number, number>;
     }>>;
 }

@@ -124,7 +124,7 @@ class OpenVits extends vits_1.default {
             return (0, koishi_1.h)(String(await this.ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/error_too_long.txt', { responseType: "text" })));
         }
         try {
-            const url = (0, koishi_1.trimSlash)(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=${this.config.format}&lang=${this.config.lang}&length=${this.config.speech_length} `);
+            const url = (0, koishi_1.trimSlash)(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=${this.config.format}&lang=${this.config.lang == 'jp' ? "ja" : this.config.lang}&length=${this.config.speech_length} `);
             const response = await this.ctx.http.get(url, { responseType: 'arraybuffer' });
             return koishi_1.h.audio(response, 'audio/mpeg');
         }

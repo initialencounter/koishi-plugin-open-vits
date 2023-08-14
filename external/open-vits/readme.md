@@ -13,6 +13,7 @@
 
 
 ## 更新日志
+* v1.6.2 修改语言 jp 为 ja(close #5)
 * v1.6.0 新增 lang format length 参数 (close #4)
 * v1.5.6 更改本地化文本 (close #3)
 * v1.4.1 更改speaker选项缩写
