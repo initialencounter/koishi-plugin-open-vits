@@ -6,9 +6,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.logger = exports.name = exports.using = void 0;
 const koishi_1 = require("koishi");
 const vits_1 = __importDefault(require("@initencounter/vits"));
+const fs = require('fs');
+const path = require('path');
 exports.using = ['translator'];
 exports.name = 'open-vits';
 exports.logger = new koishi_1.Logger(exports.name);
+function writeToFile(channelId, data) {
+    const dirPath = path.join(__dirname, 'data');
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath);
+    }
+    const filePath = path.join(dirPath, `${channelId}.txt`);
+    fs.writeFileSync(filePath, data);
+}
+function readFromFile(channelId) {
+    const filePath = path.join(__dirname, 'data', `${channelId}.txt`);
+    try {
+        if (fs.existsSync(filePath)) {
+            const data = fs.readFileSync(filePath, 'utf8');
+            return data;
+        } else {
+            return `No data found`;
+        }
+    } catch (error) {
+        console.error(error);
+        return 'An error occurred while reading the file.';
+    }
+}
+function processspeakersData(data) {
+    // 确定包含BERT-VITS2数组
+    if (!data["BERT-VITS2"]) {
+        return "No BERT-VITS2 data found.";
+    }
+    const bertVits2 = data["BERT-VITS2"];
+    let maxId = -1;
+    const formattedString = bertVits2.map(item => {
+        if (item.id > maxId) {
+            maxId = item.id;
+        }
+        return `${item.id}:${item.name}`;
+    }).join('\n');
+    return { formattedString: `Id对照表:\n${formattedString}`, maxId: maxId };
+}
+
 class OpenVits extends vits_1.default {
     constructor(ctx, config) {
         super(ctx);
@@ -31,8 +71,29 @@ class OpenVits extends vits_1.default {
         ctx.on('send', (session) => {
             this.temp_msg = session.messageId;
         });
+        ctx.command('切换语音 <input:text>', '更换语音角色，每个频道独立')
+            .action(async ({ session }, input) => {
+                try {
+                    let speaker_get = await ctx.http.get(`${this.endpoint}/voice/speakers`);
+                    let speaker_id_raw = processspeakersData(speaker_get);
+                    if (speaker_id_raw === "No BERT-VITS2 data found.") {
+                        return `切换语音功能暂时只对bert_vits2生效`
+                    }
+                    let MAXID = speaker_id_raw.maxId;
+                    let speaker_text = speaker_id_raw.formattedString;
+
+                    if (isNaN(input) || input < 0 || input > MAXID) {
+                        return `请输入一个介于0到${MAXID}之间的数字\n${speaker_text}`;
+                    }
+                    writeToFile(session.channelId, input);
+                    return `已经切换到${input}号角色`;
+                } catch (error) {
+                    console.error(error);
+                    return '在处理请求时发生错误';
+                }
+            });
+
         ctx.command('say <input:text>', 'vits语音合成')
-            .option('speaker', '-s <speaker:string>', { fallback: config.speaker_id })
             .option('lang', '-l <lang:string>')
             .action(async ({ session, options }, input) => {
             if (config.waiting) {
@@ -99,7 +160,7 @@ class OpenVits extends vits_1.default {
             }
             const speaker_id = this.speaker;
             const result = { input, speaker_id };
-            result.output = await this.say(result);
+            result.output = await this.say(result, session);
             return result.output;
         });
     }
@@ -115,7 +176,7 @@ class OpenVits extends vits_1.default {
      * @param speaker_id 音色id，可选
      * @returns
      */
-    async say(option) {
+    async say(option, session) {
         let { input, speaker_id } = option;
         if (!speaker_id) {
             speaker_id = this.speaker;
@@ -124,7 +185,17 @@ class OpenVits extends vits_1.default {
             return (0, koishi_1.h)(String(await this.ctx.http.get('https://drive.t4wefan.pub/d/koishi/vits/error_too_long.txt', { responseType: "text" })));
         }
         try {
-            const url = (0, koishi_1.trimSlash)(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=${this.config.format}&lang=${this.config.lang == 'jp' ? "ja" : this.config.lang}&length=${this.config.speech_length} `);
+            let CID = readFromFile(session.channelId);
+            if (CID === `No data found`) {
+                writeToFile(session.channelId, `0`);
+                CID = `0`
+            }
+            let url = ``
+            if (this.config.bert_vits2) {
+                url = (0, koishi_1.trimSlash)(`${this.endpoint}/voice/bert-vits2?text=${encodeURIComponent(input)}&id=${CID}&format=${this.config.format}&lang=${this.config.lang == 'jp' ? "ja" : this.config.lang}&length=${this.config.speech_length} `);
+            } else {
+                url = (0, koishi_1.trimSlash)(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${CID}&format=${this.config.format}&lang=${this.config.lang == 'jp' ? "ja" : this.config.lang}&length=${this.config.speech_length} `);
+            }
             const response = await this.ctx.http.get(url, { responseType: 'arraybuffer' });
             return koishi_1.h.audio(response, 'audio/mpeg');
         }
@@ -149,7 +220,7 @@ class OpenVits extends vits_1.default {
 `;
     OpenVits.Config = koishi_1.Schema.object({
         endpoint: koishi_1.Schema.string().default('https://api.vits.t4wefan.pub').description('vits服务器地址'),
-        speaker_id: koishi_1.Schema.string().default('0').description('speaker_id'),
+        bert_vits2: koishi_1.Schema.boolean().default(false).description('是否是bert_vits2模型'),
         max_length: koishi_1.Schema.number().default(256).description('最大长度'),
         waiting: koishi_1.Schema.boolean().default(true).description('消息反馈，会发送思考中...'),
         recall: koishi_1.Schema.boolean().default(true).description('会撤回思考中'),
