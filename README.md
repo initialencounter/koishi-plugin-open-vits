@@ -3,6 +3,7 @@
 [![npm](https://img.shields.io/npm/v/koishi-plugin-open-vits?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-open-vits)
 
 <a name="readme-top"></a>
+
 ## 注意事项
 >对于部署者行为及所产生的任何纠纷， Koishi 及 koishi-plugin-open-vits 概不负责。<br>
 如果有更多文本内容想要修改，可以在<a style="color:blue" href="/locales">本地化</a>中修改 zh 内容</br>
@@ -11,6 +12,55 @@
 - say 要转化的文本
   - 可选项-s 说话的音色id
 
+<a name="readme-top"></a>
+
+## 部署方法
+- 1.先部署[vits后端](https://github.com/Artrajz/vits-simple-api)
+- 2.再部署本项目
+
+## 环境依赖
+
+- [vits后端](https://github.com/Artrajz/vits-simple-api)所需环境
+- nodejs14以上版本
+- Koishi
+- go-cqhttp
+- ffmpeg
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## 使用方法
+* 1.启动[vits后端](https://github.com/Artrajz/vits-simple-api)接口
+
+* 2.启动[go-cqhttp](https://github.com/Mrs4s/go-cqhttp)并开启正向ws服务
+
+* 2-1配置onebot
+将index.ts中的
+```
+endpoint: 'ws://127.0.0.1:32333'
+```
+修改为go-cqhttp的正向ws服务地址
+
+
+* 3.安装[koishi](https://koishi.chat)依赖
+
+在本项目根目录下运行
+```shell
+npm i
+```
+
+* 4.配置vits
+将index.ts中的
+```
+endpoint: 'https://api.vits.t4wefan.pub',
+```
+修改为本地部署的vits地址
+
+* 5.启动机器人
+```
+node -r esbuild-register .
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 更新日志
 * v1.6.2 修改语言 jp 为 ja(close #5)
