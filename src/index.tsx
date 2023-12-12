@@ -1,34 +1,50 @@
 import { Context, Schema, h, Session, Logger, Dict, trimSlash } from 'koishi'
 import { } from '@koishijs/translator'
 import Vits from '@initencounter/vits'
-import path from 'path'
+import path, { resolve } from 'path'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
-export const using = ['translator']
+export const inject = ['translator', 'database']
 export const name: string = 'open-vits'
 export const logger: Logger = new Logger(name)
 
-function writeToFile(channelId, data) {
-  const dirPath = path.join(__dirname, 'data')
-  if (!existsSync(dirPath)) {
-    mkdirSync(dirPath)
-  }
-  const filePath = path.join(dirPath, `${channelId}.txt`)
-  writeFileSync(filePath, data)
-}
-function readFromFile(channelId) {
-  const filePath = path.join(__dirname, 'data', `${channelId}.txt`)
-  try {
-    if (existsSync(filePath)) {
-      const data = readFileSync(filePath, 'utf8')
-      return data
-    } else {
-      return `No data found`
-    }
-  } catch (error) {
-    console.error(error)
-    return 'An error occurred while reading the file.'
+declare module 'koishi' {
+  interface Tables {
+    speakers: Speakers
   }
 }
+
+// 这里是新增表的接口类型
+export interface Speakers {
+  id: number
+  channelId: string
+  vits_speakerId: number
+  bert_vits_speakerId: number
+}
+
+
+
+// function writeToFile(channelId, data) {
+//   const dirPath = path.join(__dirname, 'data')
+//   if (!existsSync(dirPath)) {
+//     mkdirSync(dirPath)
+//   }
+//   const filePath = path.join(dirPath, `${channelId}.txt`)
+//   writeFileSync(filePath, data)
+// }
+// function readFromFile(channelId) {
+//   const filePath = path.join(__dirname, 'data', `${channelId}.txt`)
+//   try {
+//     if (existsSync(filePath)) {
+//       const data = readFileSync(filePath, 'utf8')
+//       return data
+//     } else {
+//       return `No data found`
+//     }
+//   } catch (error) {
+//     console.error(error)
+//     return 'An error occurred while reading the file.'
+//   }
+// }
 function processspeakersData(data) {
   // 确定包含BERT-VITS2数组
   if (!data['BERT-VITS2']) {
@@ -55,9 +71,15 @@ class OpenVits extends Vits {
   recall_time: number
   max_length: number
   endpoint: string
-  ctx: any
   constructor(ctx: Context, private config: OpenVits.Config) {
     super(ctx)
+    ctx.model.extend('speakers', {
+      // 各字段的类型声明
+      id: 'unsigned',
+      channelId: 'text',
+      vits_speakerId: 'integer',
+      bert_vits_speakerId: 'integer',
+    })
     this.recall_time = config.recall_time
     this.max_length = config.max_length
     this.endpoint = config.endpoint
@@ -90,7 +112,7 @@ class OpenVits extends Vits {
           if (isNaN(Number(input)) || Number(input) < 0 || Number(input) > MAXID) {
             return `请输入一个介于0到${MAXID}之间的数字\n${speaker_text}`
           }
-          writeToFile(session.channelId, input)
+          await this.setSpecker(session.channelId, Number(input), 'bert')
           return `已经切换到${input}号角色`
         } catch (error) {
           console.error(error)
@@ -158,12 +180,10 @@ class OpenVits extends Vits {
             }
           }
         }
-        let CID = readFromFile(session.channelId);
-        if (CID === 'No data found') {
-          writeToFile(session.channelId, '0');
-          CID = '0'
+        if (this.config.bert_vits2) {
+          this.speaker = (await this.getSpeaker(session.channelId))?.bert_vits_speakerId ?? 0
         }
-        const speaker_id: number = Number(CID) ?? this.speaker
+        const speaker_id: number = this.speaker
         const result: OpenVits.Result = { input, speaker_id }
         result.output = await this.say(result)
         return result.output
@@ -206,19 +226,29 @@ class OpenVits extends Vits {
     }
 
   }
+  async getSpeaker(channelId: string) {
+    const data = (await this.ctx.database.get('speakers', { channelId: channelId }, ['vits_speakerId', 'bert_vits_speakerId']))[0]
+    return data
+  }
+  async setSpecker(channelId: string, speakerId: number, type: string) {
+    const data = await this.getSpeaker(channelId)
+    if (data) {
+      const idMap = {
+        vits_speakerId: type === "bert" ? speakerId : data.vits_speakerId,
+        bert_vits_speakerId: type === "bert" ? data.bert_vits_speakerId : speakerId
+      }
+      return await this.ctx.database.set('speakers', { channelId: channelId }, idMap)
+    }
+    const idMap = {
+      vits_speakerId: type === "bert" ? speakerId : this.config.speaker_id,
+      bert_vits_speakerId: type === "bert" ? this.config.speaker_id : speakerId
+    }
+    return await this.ctx.database.set('speakers', { channelId: channelId }, idMap)
+  }
+
 }
 namespace OpenVits {
-  export const usage = `
-## 注意事项
->对于部署者行为及所产生的任何纠纷， Koishi 及 koishi-plugin-open-vits 概不负责。<br>
-如果有更多文本内容想要修改，可以在<a style='color:blue' href='/locales'>本地化</a>中修改 zh 内容</br>
-后端搭建教程<a style='color:blue' href='https://github.com/Artrajz/vits-simple-api'>vits-simple-api</a>
-## 使用方法
-* say 要转化的文本
-
-## 问题反馈群: 
-099899914
-`
+  export const usage = `${readFileSync(resolve(__dirname, '../readme.md')).toString("utf-8").split("更新日志")[0]}`
   export interface Result {
     input: string
     speaker_id?: number
@@ -230,23 +260,22 @@ namespace OpenVits {
     waiting: boolean
     recall: boolean
     recall_time: number
-    speaker_id: string
+    speaker_id: number
     bert_vits2: boolean
     translator: boolean
     format: 'ogg' | 'wav' | 'amr' | 'mp3'
     lang: 'mix' | 'zh' | 'en' | 'jp' | 'auto'
     speech_length: number
   }
-  export const Config: Schema<Config> =
+  export const Config: Schema<Config> = Schema.intersect([
     Schema.object({
       endpoint: Schema.string().default('https://api.vits.t4wefan.pub').description('vits服务器地址'),
-      speaker_id: Schema.string().default('0').description('speaker_id'),
       bert_vits2: Schema.boolean().default(false).description('是否是bert_vits2模型'),
       max_length: Schema.number().default(256).description('最大长度'),
-      waiting: Schema.boolean().default(true).description('消息反馈，会发送思考中...'),
-      recall: Schema.boolean().default(true).description('会撤回思考中'),
-      recall_time: Schema.number().default(5000).description('撤回的时间'),
       translator: Schema.boolean().default(true).description('将启用翻译'),
+    }).description("基础设置"),
+    Schema.object({
+      speaker_id: Schema.number().default(0).description('speaker_id'),
       format: Schema.union([
         Schema.const('ogg'),
         Schema.const('wav'),
@@ -259,10 +288,16 @@ namespace OpenVits {
         Schema.const('en'),
         Schema.const('jp'),
         Schema.const('auto')
-      ])
-        .default('mix').description('语言'),
-      speech_length: Schema.number().default(1.4).description('speech lenght'),
-    })
+      ]).default('mix').description('语言'),
+      speech_length: Schema.number().role('slider').min(0).max(2).step(0.1).default(1.4).description('语速, 越大越慢'),
+    }).description("参数设置"),
+    Schema.object({
+      waiting: Schema.boolean().default(true).description('消息反馈，会发送思考中...'),
+      recall: Schema.boolean().default(true).description('会撤回思考中'),
+      recall_time: Schema.number().default(5000).description('撤回的时间'),
+    }).description("拓展设置")
+  ])
+
 
 }
 
