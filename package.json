@@ -1,8 +1,7 @@
 {
-  "name": "open-vits-bot",
-  "description": "语音合成机器人",
-  "private": "true",
-  "version": "1.0.2",
+  "name": "koishi-plugin-open-vits",
+  "description": "一个基于vits-simple-api的koishi插件，支持语音合成，默认使用api来自t4wefan",
+  "version": "1.6.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -11,6 +10,16 @@
   ],
   "license": "AGPL-3.0",
   "author": "t4wefan <guanghoushi@gmail.com>",
+  "maintainers": [
+    {
+      "name": "t4wefan",
+      "email": "guanghoushi@gmail.com"
+    },
+    {
+      "name": "initencounter",
+      "email": "2911583893@qq.com"
+    }
+  ],
   "contributors": [
     "t4wefan <guanghoushi@gmail.com>",
     "initencounter <2911583893@qq.com>"
@@ -23,6 +32,7 @@
     "url": "https://github.com/initialencounter/koishi-plugin-open-vits/issues"
   },
   "homepage": "https://github.com/initialencounter/koishi-plugin-open-vits#readme",
+  "scripts": {},
   "keywords": [
     "chatbot",
     "koishi",
@@ -30,52 +40,22 @@
     "vits",
     "service"
   ],
-  "workspaces": [
-    "external/*"
-  ],
-  "scripts": {
-    "start:build": "node -r esbuild-register .",
-    "new": "koishi-scripts new",
-    "build": "yakumo build",
-    "dep": "yakumo upgrade",
-    "dev": "cross-env NODE_ENV=development koishi start -r esbuild-register -r yml-register",
-    "start": "koishi start"
+  "peerDependencies": {
+    "koishi": "^4.11.9"
   },
-  "devDependencies": {
-    "@koishijs/client": "^5.12.0",
-    "@koishijs/plugin-hmr": "^1.2.1",
-    "@koishijs/scripts": "^4.1.7",
-    "@types/node": "^20.4.2",
-    "cross-env": "^7.0.3",
-    "esbuild": "^0.18.14",
-    "esbuild-register": "npm:@shigma/esbuild-register@^1.1.1",
-    "typescript": "^5.1.6",
-    "yakumo": "^0.3.13",
-    "yakumo-esbuild": "^0.3.22",
-    "yakumo-esbuild-yaml": "^0.3.1",
-    "yakumo-publish": "^0.3.4",
-    "yakumo-publish-sync": "^0.3.3",
-    "yakumo-tsc": "^0.3.9",
-    "yakumo-upgrade": "^0.3.3",
-    "yakumo-version": "^0.3.4",
-    "yml-register": "^1.1.0"
+  "koishi": {
+    "description": "一个基于vits-simple-api的koishi插件，支持语音合成，默认使用api来自t4wefan",
+    "service": {
+      "implements": [
+        "vits"
+      ],
+      "optional": [
+        "translator"
+      ]
+    }
   },
   "dependencies": {
-    "@initencounter/vits": "^0.0.3",
-    "@koishijs/plugin-adapter-discord": "^3.6.1",
-    "@koishijs/plugin-adapter-onebot": "^5.7.1",
-    "@koishijs/plugin-admin": "^1.3.0",
-    "@koishijs/plugin-analytics": "^1.0.3",
-    "@koishijs/plugin-commands": "^3.2.1",
-    "@koishijs/plugin-config": "^2.1.0",
-    "@koishijs/plugin-console": "^5.11.0",
-    "@koishijs/plugin-echo": "^2.2.3",
-    "@koishijs/plugin-help": "2.2.3",
-    "@koishijs/plugin-market": "^2.0.4",
-    "@koishijs/plugin-sandbox": "^3.1.6",
-    "@koishijs/translator": "^1.1.1",
-    "koishi": "^4.13.1",
-    "koishi-plugin-gocqhttp": "^3.7.2",
-    "koishi-plugin-puppeteer": "^3.5.0"
+    "@initencounter/vits": "^0.0.2",
+    "@koishijs/translator": "^1.0.0"
   }
 }
