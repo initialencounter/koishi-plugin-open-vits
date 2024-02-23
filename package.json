@@ -43,7 +43,7 @@
     "service"
   ],
   "peerDependencies": {
-    "koishi": "^4.16.8"
+    "koishi": "^4.17.1"
   },
   "koishi": {
     "description": "一个基于vits-simple-api的koishi插件，支持语音合成，默认使用api来自t4wefan",
