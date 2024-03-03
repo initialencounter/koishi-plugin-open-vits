@@ -71,7 +71,7 @@ class OpenVits extends Vits {
   recall_time: number
   max_length: number
   endpoint: string
-  constructor(ctx: Context, private config: OpenVits.Config) {
+  constructor(ctx: Context, config: OpenVits.Config) {
     super(ctx)
     ctx.model.extend('speakers', {
       // 各字段的类型声明
@@ -218,7 +218,7 @@ class OpenVits extends Vits {
       } else {
         url = trimSlash(`${this.endpoint}/voice?text=${encodeURIComponent(input)}&id=${speaker_id}&format=${this.config.format}&lang=${this.config.lang == 'jp' ? "ja" : this.config.lang}&length=${this.config.speech_length} `);
       }
-      const response: Buffer = await this.ctx.http.get(url, { responseType: 'arraybuffer' })
+      const response = await this.ctx.http.get(url, { responseType: 'arraybuffer' })
       return h.audio(response, 'audio/mpeg')
     } catch (e) {
       logger.info(String(e))
