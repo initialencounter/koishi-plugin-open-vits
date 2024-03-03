@@ -15,7 +15,6 @@ export interface Speakers {
     bert_vits_speakerId: number;
 }
 declare class OpenVits extends Vits {
-    private config;
     temp_msg: string;
     speaker: number;
     speaker_list: Dict[];
@@ -34,7 +33,7 @@ declare class OpenVits extends Vits {
      */
     say(option: OpenVits.Result): Promise<h>;
     getSpeaker(channelId: string): Promise<Pick<Speakers, "vits_speakerId" | "bert_vits_speakerId">>;
-    setSpecker(channelId: string, speakerId: number, type: string): Promise<import("koishi").Driver.WriteResult>;
+    setSpecker(channelId: string, speakerId: number, type: string): Promise<import("minato").Driver.WriteResult>;
 }
 declare namespace OpenVits {
     const usage: string;
