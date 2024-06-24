@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-open-vits",
-  "description": "一个基于vits-simple-api的koishi插件，支持语音合成，默认使用api来自t4wefan",
+  "description": "vits 插件，支持 `BERT-VITS2` | `GPT-SOVITS` | `HUBERT-VITS` | `VITS` | `W2V2-VITS`",
   "version": "2.0.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -46,13 +46,16 @@
     "koishi": "^4.17.1"
   },
   "koishi": {
-    "description": "一个基于vits-simple-api的koishi插件，支持语音合成，默认使用api来自t4wefan",
+    "description": "vits 插件，支持 `BERT-VITS2` | `GPT-SOVITS` | `HUBERT-VITS` | `VITS` | `W2V2-VITS`",
     "service": {
       "implements": [
         "vits"
       ],
       "optional": [
         "translator"
+      ],
+      "required": [
+        "database"
       ]
     }
   },
