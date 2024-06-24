@@ -98,7 +98,7 @@ class OpenVits extends Vits {
     ctx.on('send', (session) => {
       this.last_messageId = session.messageId
     })
-    ctx.command('切换语音 <input:text>', '更换语音角色，每个用户独立')
+    ctx.command('切换语音 <input:text>', '更换语音角色，每个用户独立', { checkArgCount: true })
       .action(async ({ session }, input) => this.handleSwitch(session as Session<'vits_engine' | 'vits_speakerId'>, input))
     ctx.command('say <input:text>', 'vits语音合成')
       .option('speaker', '-s <speaker:string>', { fallback: config.speaker_id })
