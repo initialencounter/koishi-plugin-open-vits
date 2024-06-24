@@ -1,79 +1,41 @@
-# koishi-plugin-open-vits
+# :sparkles: koishi-plugin-open-vits :sparkles:
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-open-vits?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-open-vits)
 
-<a name="readme-top"></a>
+## :warning: 注意事项
 
-## 注意事项
->对于部署者行为及所产生的任何纠纷， Koishi 及 koishi-plugin-open-vits 概不负责。<br>
-如果有更多文本内容想要修改，可以在<a style="color:blue" href="/locales">本地化</a>中修改 zh 内容</br>
-后端搭建教程<a style="color:blue" href="https://github.com/Artrajz/vits-simple-api">vits-simple-api</a>
-## 使用方法
+对于部署者行为及所产生的任何纠纷，Koishi及koishi-plugin-open-vits概不负责。
+如果有更多文本内容想要修改，可以在[本地化]("/locales")中修改zh内容。
+后端搭建教程 [vits-simple-api](https://github.com/Artrajz/vits-simple-api)
+
+## :rocket: 使用方法
+
 - say 要转化的文本
   - 可选项-s 说话的音色id
 
-<a name="readme-top"></a>
+## :memo: 更新日志
 
-## 更新日志
-* v2.0.0 适配 bert-vits
-* v1.6.2 修改语言 jp 为 ja(close #5)
+* v2.0.0 
+  重构代码
+  适配 `BERT-VITS2` | `GPT-SOVITS` | `HUBERT-VITS` | `VITS` | `W2V2-VITS`
+* v1.6.2 修改语言 jp 为 ja (close #5)
 * v1.6.0 新增 lang format length 参数 (close #4)
 * v1.5.6 更改本地化文本 (close #3)
 * v1.4.1 更改speaker选项缩写
 * v1.4.0 重写服务vits
-* V1.3.0 重写服务vits
-* V1.2.0 新增翻译服务
-* V1.0.2 修复无法启用的bug
-* V0.0.4 修复空格bug，新增encodeURIComponent编码
+* v1.3.0 重写服务vits
+* v1.2.0 新增翻译服务
+* v1.0.2 修复无法启用的bug
+* v0.0.4 修复空格bug，新增 encodeURIComponent 编码
 * v0.0.3 添加usage, 作者信息
 * v0.0.2 实现了vits服务
 
-## 部署方法
-- 1.先部署[vits后端](https://github.com/Artrajz/vits-simple-api)
-- 2.再部署本项目
-
-## 环境依赖
-
-- [vits后端](https://github.com/Artrajz/vits-simple-api)所需环境
-- nodejs18以上版本
-- Koishi
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 启动
-* 1.启动[vits后端](https://github.com/Artrajz/vits-simple-api)接口
-
-* 2.安装koishi依赖
-
-* 3.安装本插件
-
-* 4.配置vits
-
-在插件配置页面将 endpoint 修改为本地部署的vits地址
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTACT -->
 ## Contact
 
 QQ群399899914
 
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [t4wefan](https://github.com/t4wefan)后端及插件贡献者
-* [vits-simple-api](https://github.com/Artrajz/vits-simple-api)A simple vits API | MoeGoe API
-* [koishi](https://koishi.chat)跨平台、可扩展、高性能的机器人框架
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+* [t4wefan](https://github.com/t4wefan) 后端及插件贡献者
+* [vits-simple-api](https://github.com/Artrajz/vits-simple-api) vits 本地部署API
+* [koishi](https://koishi.chat) 跨平台、可扩展、高性能的机器人框架

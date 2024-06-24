@@ -1,39 +1,44 @@
-import { Context, Schema, h, Session, Logger, Dict } from 'koishi';
+import { Context, Schema, h, Session, Logger, Quester } from 'koishi';
 import Vits from '@initencounter/vits';
+import { BaseConfigType } from './config';
+import { SpeakerList, T4wefanText, VitsEngine } from './types';
 export declare const inject: string[];
 export declare const name: string;
 export declare const logger: Logger;
 declare module 'koishi' {
-    interface Tables {
-        speakers: Speakers;
+    interface User {
+        vits_speakerId: number;
+        vits_engine: VitsEngine;
     }
 }
-export interface Speakers {
-    id: number;
-    channelId: string;
-    vits_speakerId: number;
-    bert_vits_speakerId: number;
-}
 declare class OpenVits extends Vits {
-    temp_msg: string;
+    last_messageId: string;
     speaker: number;
-    speaker_list: Dict[];
+    speakers: SpeakerList;
     max_speakers: number;
     speaker_dict: string[];
     recall_time: number;
     max_length: number;
     endpoint: string;
-    constructor(ctx: Context, config: OpenVits.Config);
-    recall(session: Session, messageId: string): Promise<void>;
+    http: Quester;
+    t4wefan_text: T4wefanText;
+    baseConfig: BaseConfigType;
+    constructor(ctx: Context, config: BaseConfigType);
+    handleSwitch(session: Session<'vits_engine' | 'vits_speakerId'>, input: string, engine?: VitsEngine): Promise<string>;
+    handleSay(session: Session<'vits_engine' | 'vits_speakerId'>, options: any, input: string): Promise<string | h>;
     /**
      *
      * @param input 要转化的文本
-     * @param speaker_id 音色id，可选
      * @returns
      */
     say(option: OpenVits.Result): Promise<h>;
-    getSpeaker(channelId: string): Promise<Pick<Speakers, "vits_speakerId" | "bert_vits_speakerId">>;
-    setSpecker(channelId: string, speakerId: number, type: string): Promise<import("minato").Driver.WriteResult>;
+    /**
+     *
+     * @param option 要转化的文本
+     * @param engine VITS引擎
+     * @returns
+     */
+    baseSay(option: OpenVits.Result, engine: VitsEngine): Promise<h>;
 }
 declare namespace OpenVits {
     const usage: string;
@@ -42,19 +47,6 @@ declare namespace OpenVits {
         speaker_id?: number;
         output?: h;
     }
-    interface Config {
-        endpoint: string;
-        max_length: number;
-        waiting: boolean;
-        recall: boolean;
-        recall_time: number;
-        speaker_id: number;
-        bert_vits2: boolean;
-        translator: boolean;
-        format: 'ogg' | 'wav' | 'amr' | 'mp3';
-        lang: 'mix' | 'zh' | 'en' | 'jp' | 'auto';
-        speech_length: number;
-    }
-    const Config: Schema<Config>;
+    const Config: Schema<BaseConfigType>;
 }
 export default OpenVits;
