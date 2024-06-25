@@ -94,8 +94,10 @@ class OpenVits extends Vits {
         this.t4wefan_text = await getT4wefanText(ctx.http)
       }
 
-      this.reference_audio = readFileSync(config.reference_audio)
-      getMimeTypeFromFilename(config.reference_audio)
+      if (config.reference_audio) {
+        this.reference_audio = readFileSync(config.reference_audio)
+        this.reference_audio_mime = getMimeTypeFromFilename(config.reference_audio)
+      }
       ctx.i18n.define('zh', require('./locales/zh'))
     })
 
@@ -201,7 +203,7 @@ class OpenVits extends Vits {
         text_prompt: this.baseConfig.text_prompt,
         prompt_text: this.baseConfig.prompt_text,
         prompt_lang: this.baseConfig.prompt_lang,
-        reference_audio: new Blob([this.reference_audio], { type: this.reference_audio_mime }),
+        reference_audio: this.reference_audio ? new Blob([this.reference_audio], { type: this.reference_audio_mime }): undefined,
       }
 
       let formData: FormData = optionsToFormData(options)

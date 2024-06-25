@@ -36,14 +36,14 @@ export const BaseConfig: Schema<BaseConfigType> = Schema.intersect([
   }).description("基础设置"),
   Schema.union([
     Schema.object({
-      defaultEngine: Schema.const('BERT-VITS2').required(),
+      defaultEngine: Schema.const('BERT-VITS2'),
       reference_audio: Schema.path().description('参考音频'),
       text_prompt: Schema.string().default('happy').description('融合文本语义'),
       prompt_text: Schema.string().hidden(true).default('happy').description('参考文本'),
       prompt_lang: Schema.string().default('auto').hidden(true).description('参考文本语言'),
     }).description('BERT-VITS2 引擎配置'),
     Schema.object({
-      defaultEngine: Schema.const('GPT-SOVITS').required(),
+      defaultEngine: Schema.const('GPT-SOVITS'),
       reference_audio: Schema.path().description('参考音频，必填'),
       prompt_text: Schema.string().default('happy').description('参考文本，必填'),
       text_prompt: Schema.string().default('happy').hidden(true).description('融合文本语义'),
