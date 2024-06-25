@@ -1,13 +1,11 @@
 import { Context, h, Session, Logger, Quester } from 'koishi'
 import { } from '@koishijs/translator'
 import Vits from '@initencounter/vits'
-import path, { resolve } from 'path'
-import { createReadStream, readFileSync } from 'fs'
-import axois from 'axios'
-import FormData from 'form-data'
+import { resolve } from 'path'
+import { readFileSync } from 'fs'
 import { BaseConfigType, BaseConfig } from './config'
-import { GPTSOVITSOptions, Lang, Speaker, SpeakerList, T4wefanText, VitsEngine } from './types'
-import { optionsToFormData, getSpeakerList, getT4wefanText, recall, translateText } from './utils'
+import { AudioMime, GPTSOVITSOptions, Lang, Speaker, SpeakerList, T4wefanText, VitsEngine } from './types'
+import { optionsToFormData, getSpeakerList, getT4wefanText, recall, translateText, getMimeTypeFromFilename } from './utils'
 export const inject = ['translator', 'database']
 export const name: string = 'open-vits'
 export const logger: Logger = new Logger(name)
@@ -51,6 +49,8 @@ class OpenVits extends Vits {
   http: Quester
   t4wefan_text: T4wefanText
   baseConfig: BaseConfigType
+  reference_audio: Buffer
+  reference_audio_mime: AudioMime
   constructor(ctx: Context, config: BaseConfigType) {
     super(ctx)
     this.baseConfig = config
@@ -93,6 +93,9 @@ class OpenVits extends Vits {
       if (config.endpoint === 'https://api.vits.t4wefan.pub') {
         this.t4wefan_text = await getT4wefanText(ctx.http)
       }
+
+      this.reference_audio = readFileSync(config.reference_audio)
+      getMimeTypeFromFilename(config.reference_audio)
       ctx.i18n.define('zh', require('./locales/zh'))
     })
 
@@ -198,17 +201,13 @@ class OpenVits extends Vits {
         text_prompt: this.baseConfig.text_prompt,
         prompt_text: this.baseConfig.prompt_text,
         prompt_lang: this.baseConfig.prompt_lang,
+        reference_audio: new Blob([this.reference_audio], { type: this.reference_audio_mime }),
       }
 
       let formData: FormData = optionsToFormData(options)
-      formData.append('reference_audio', createReadStream(this.baseConfig.reference_audio), {
-        filename: path.basename(this.baseConfig.reference_audio), // ... or:
-        contentType: 'audio/wav',
-      })
-
-      let url = `${this.http.config.baseURL}/voice${ENGINE_MAP[engine]}`
-      const response = await axois.post(url, formData, { responseType: 'arraybuffer' })
-      return h.audio(response.data, 'audio/mpeg')
+      let url = `/voice${ENGINE_MAP[engine]}`
+      const response = await this.http.post(url, formData, { responseType: 'arraybuffer' })
+      return h.audio(response, 'audio/mpeg')
 
     } catch (e) {
       logger.info(e)

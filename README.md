@@ -15,6 +15,8 @@
 
 ## :memo: 更新日志
 
+* v2.0.2 用回 ctx.http
+* v2.0.1 增加参考音频
 * v2.0.0 
   重构代码
   适配 `BERT-VITS2` | `GPT-SOVITS` | `HUBERT-VITS` | `VITS` | `W2V2-VITS`

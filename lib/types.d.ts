@@ -36,3 +36,4 @@ export type T4wefanText = {
     waiting: string;
     'too-long': string;
 };
+export type AudioMime = 'audio/mpeg' | 'audio/wav' | 'audio/ogg' | 'audio/aac' | 'audio/flac';

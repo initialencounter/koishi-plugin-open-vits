@@ -1,7 +1,6 @@
 import { Logger, Quester, Session } from 'koishi'
-import { BertVITS2Options, GPTSOVITSOptions, SpeakerList } from './types'
+import { AudioMime, BertVITS2Options, GPTSOVITSOptions, SpeakerList } from './types'
 import Translator from '@koishijs/translator'
-import FormData from 'form-data'
 
 export async function getSpeakerList(http: Quester) {
     let speakers = await http.get('/voice/speakers')
@@ -70,5 +69,26 @@ export async function translateText(
         })
     } catch (err) {
         logger.warn(err)
+    }
+}
+
+export function getMimeTypeFromFilename(filename: string): AudioMime {
+    const extension = filename.split('.').pop()?.toLowerCase()
+    if (!extension) {
+        return 'audio/wav'
+    }
+    switch (extension) {
+        case 'mp3':
+            return 'audio/mpeg'
+        case 'wav':
+            return 'audio/wav'
+        case 'ogg':
+            return 'audio/ogg'
+        case 'aac':
+            return 'audio/aac'
+        case 'flac':
+            return 'audio/flac'
+        default:
+            return 'audio/wav'
     }
 }

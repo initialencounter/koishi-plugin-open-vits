@@ -1,7 +1,8 @@
+/// <reference types="node" />
 import { Context, h, Session, Logger, Quester } from 'koishi';
 import Vits from '@initencounter/vits';
 import { BaseConfigType } from './config';
-import { SpeakerList, T4wefanText, VitsEngine } from './types';
+import { AudioMime, SpeakerList, T4wefanText, VitsEngine } from './types';
 export declare const inject: string[];
 export declare const name: string;
 export declare const logger: Logger;
@@ -23,6 +24,8 @@ declare class OpenVits extends Vits {
     http: Quester;
     t4wefan_text: T4wefanText;
     baseConfig: BaseConfigType;
+    reference_audio: Buffer;
+    reference_audio_mime: AudioMime;
     constructor(ctx: Context, config: BaseConfigType);
     handleSwitch(session: Session<'vits_engine' | 'vits_speakerId'>, input: string, engine?: VitsEngine): Promise<string>;
     handleSay(session: Session<'vits_engine' | 'vits_speakerId'>, options: any, input: string): Promise<string | h>;
