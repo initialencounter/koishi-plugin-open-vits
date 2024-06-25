@@ -1,6 +1,7 @@
 import { Logger, Quester, Session } from 'koishi'
-import { BertVITS2Options, SpeakerList } from './types'
+import { BertVITS2Options, GPTSOVITSOptions, SpeakerList } from './types'
 import Translator from '@koishijs/translator'
+import FormData from 'form-data'
 
 export async function getSpeakerList(http: Quester) {
     let speakers = await http.get('/voice/speakers')
@@ -17,7 +18,7 @@ export async function recall(recall: boolean, recall_time: number, session: Sess
 }
 
 
-export function OptionsToQuery(obj: BertVITS2Options): string {
+export function optionsToQuery(obj: BertVITS2Options): string {
     const params = new URLSearchParams()
     for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -25,6 +26,16 @@ export function OptionsToQuery(obj: BertVITS2Options): string {
         }
     }
     return params.toString()
+}
+
+export function optionsToFormData(obj: GPTSOVITSOptions): FormData {
+    const formData = new FormData()
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key) && obj[key] !== undefined) {
+            formData.append(key, obj[key])
+        }
+    }
+    return formData
 }
 
 export async function getT4wefanText(http: Quester) {

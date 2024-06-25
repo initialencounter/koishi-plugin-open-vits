@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-open-vits",
   "description": "vits 插件，支持 `BERT-VITS2` | `GPT-SOVITS` | `HUBERT-VITS` | `VITS` | `W2V2-VITS`",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -61,6 +61,8 @@
   },
   "dependencies": {
     "@initencounter/vits": "^0.0.2",
-    "@koishijs/translator": "^1.1.1"
+    "@koishijs/translator": "^1.1.1",
+    "form-data": "^4.0.0",
+    "axios": "^1.7.2"
   }
 }

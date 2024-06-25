@@ -1,11 +1,13 @@
-import { Context, Schema, h, Session, Logger, Dict, trimSlash, Quester, extend } from 'koishi'
+import { Context, h, Session, Logger, Quester } from 'koishi'
 import { } from '@koishijs/translator'
 import Vits from '@initencounter/vits'
 import path, { resolve } from 'path'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
+import { createReadStream, readFileSync } from 'fs'
+import axois from 'axios'
+import FormData from 'form-data'
 import { BaseConfigType, BaseConfig } from './config'
-import { BertVITS2Options, Lang, Speaker, SpeakerList, T4wefanText, VitsEngine } from './types'
-import { OptionsToQuery, getSpeakerList, getT4wefanText, recall, translateText } from './utils'
+import { GPTSOVITSOptions, Lang, Speaker, SpeakerList, T4wefanText, VitsEngine } from './types'
+import { optionsToFormData, getSpeakerList, getT4wefanText, recall, translateText } from './utils'
 export const inject = ['translator', 'database']
 export const name: string = 'open-vits'
 export const logger: Logger = new Logger(name)
@@ -187,20 +189,30 @@ class OpenVits extends Vits {
         : h.i18n('commands.say.message.too-long')
     }
     try {
-      let options: BertVITS2Options = {
+      let options: GPTSOVITSOptions = {
         text: input,
         id: speaker_id,
         format: this.baseConfig.format,
         lang: this.baseConfig.lang == 'jp' ? "ja" : this.baseConfig.lang,
-        length: this.baseConfig.speech_length
+        length: this.baseConfig.speech_length,
+        text_prompt: this.baseConfig.text_prompt,
+        prompt_text: this.baseConfig.prompt_text,
+        prompt_lang: this.baseConfig.prompt_lang,
       }
-      let urlQuery = OptionsToQuery(options)
-      let url = `/voice${ENGINE_MAP[engine]}?${urlQuery}`
-      const response = await this.http.get(url, { responseType: 'arraybuffer' })
-      return h.audio(response, 'audio/mpeg')
+
+      let formData: FormData = optionsToFormData(options)
+      formData.append('reference_audio', createReadStream(this.baseConfig.reference_audio), {
+        filename: path.basename(this.baseConfig.reference_audio), // ... or:
+        contentType: 'audio/wav',
+      })
+
+      let url = `${this.http.config.baseURL}/voice${ENGINE_MAP[engine]}`
+      const response = await axois.post(url, formData, { responseType: 'arraybuffer' })
+      return h.audio(response.data, 'audio/mpeg')
+
     } catch (e) {
-      logger.info(String(e))
-      return h(String(e))
+      logger.info(e)
+      return h(e)
     }
   }
 

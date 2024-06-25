@@ -1,4 +1,4 @@
-import { Context, Schema, h, Session, Logger, Quester } from 'koishi';
+import { Context, h, Session, Logger, Quester } from 'koishi';
 import Vits from '@initencounter/vits';
 import { BaseConfigType } from './config';
 import { SpeakerList, T4wefanText, VitsEngine } from './types';
@@ -47,6 +47,6 @@ declare namespace OpenVits {
         speaker_id?: number;
         output?: h;
     }
-    const Config: Schema<BaseConfigType>;
+    const Config: import("schemastery")<BaseConfigType>;
 }
 export default OpenVits;

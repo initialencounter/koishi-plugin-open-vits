@@ -17,6 +17,10 @@ export interface BertVITS2Options extends VITSOptions {
     style_text?: string;
     style_weight?: number;
 }
+export interface GPTSOVITSOptions extends BertVITS2Options {
+    prompt_text?: string;
+    prompt_lang?: string;
+}
 export type Lang = 'zh' | 'en' | 'fr' | 'jp' | 'ru' | 'de' | 'sh';
 export type Speaker = {
     id: number;

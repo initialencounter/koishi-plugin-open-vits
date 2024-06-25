@@ -7,6 +7,10 @@ export interface BaseConfigType {
     recall_time: number;
     speaker_id: number;
     defaultEngine: 'BERT-VITS2' | 'GPT-SOVITS' | 'HUBERT-VITS' | 'VITS' | 'W2V2-VITS';
+    reference_audio: string;
+    text_prompt: string;
+    prompt_text: string;
+    prompt_lang: string;
     defaultSpeaker: number;
     translator: boolean;
     format: 'ogg' | 'wav' | 'amr' | 'mp3';

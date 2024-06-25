@@ -19,6 +19,11 @@ export interface BertVITS2Options extends VITSOptions {
     style_weight?: number; // 文本提示词权重，Bert-VITS2 v2.3 文本提示词，用于提示词权重
 }
 
+export interface GPTSOVITSOptions extends BertVITS2Options {
+    prompt_text?: string; // 文本提示词，GPT-SO-VITS 参考文本
+    prompt_lang?: string; // 文本提示词语言，GPT-SO-VITS 参考文本语言
+}
+
 export type Lang = 'zh'|'en'|'fr'|'jp'|'ru'|'de'|'sh'
 export type Speaker = {
     id: number,
