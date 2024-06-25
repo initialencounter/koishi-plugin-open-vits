@@ -206,7 +206,7 @@ class OpenVits extends Vits {
 
 }
 namespace OpenVits {
-  export const usage = `${readFileSync(resolve(__dirname, '../readme.md')).toString("utf-8").split("更新日志")[0]}`
+  export const usage = `${readFileSync(resolve(__dirname, '../README.md')).toString("utf-8").split("更新日志")[0]}`
   export interface Result {
     input: string
     speaker_id?: number
