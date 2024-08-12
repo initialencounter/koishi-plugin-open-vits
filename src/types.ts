@@ -24,7 +24,7 @@ export interface GPTSOVITSOptions extends BertVITS2Options {
     prompt_lang?: string; // 文本提示词语言，GPT-SO-VITS 参考文本语言
 }
 
-export type Lang = 'zh'|'en'|'fr'|'jp'|'ru'|'de'|'sh'
+export type Lang = 'zh'|'en'|'fr'|'ja'|'ru'|'de'|'sh'
 export type Speaker = {
     id: number,
     lang: Lang[],

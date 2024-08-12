@@ -154,7 +154,7 @@ class OpenVits extends Vits {
       return this.t4wefan_text ? this.t4wefan_text['too-long'] : session.text('commands.say.message.too-long')
     }
 
-    const languageCodes: Lang[] = ['zh', 'en', 'fr', 'jp', 'ru', 'de']
+    const languageCodes: Lang[] = ['zh', 'en', 'fr', 'ja', 'ru', 'de']
     if (options.lang && languageCodes.includes(options.lang) && this.baseConfig.translator && this.ctx.translator) {
       input = await translateText(this.ctx.translator, input, logger, options.lang) ?? input
     }
@@ -169,19 +169,19 @@ class OpenVits extends Vits {
     return await this.baseSay(result, engine)
   }
   /**
-   * 
+   *
    * @param input 要转化的文本
-   * @returns 
+   * @returns
    */
   async say(option: OpenVits.Result): Promise<h> {
     return await this.baseSay(option, this.baseConfig.defaultEngine)
   }
 
   /**
-   * 
+   *
    * @param option 要转化的文本
    * @param engine VITS引擎
-   * @returns 
+   * @returns
    */
   async baseSay(option: OpenVits.Result, engine: VitsEngine): Promise<h> {
     let { input, speaker_id } = option
