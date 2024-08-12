@@ -15,9 +15,10 @@
 
 ## :memo: 更新日志
 
+* v2.0.4 修复 lang=jp 的时候无法设置语言
 * v2.0.2 用回 ctx.http
 * v2.0.1 增加参考音频
-* v2.0.0 
+* v2.0.0
   重构代码
   适配 `BERT-VITS2` | `GPT-SOVITS` | `HUBERT-VITS` | `VITS` | `W2V2-VITS`
 * v1.6.2 修改语言 jp 为 ja (close #5)
