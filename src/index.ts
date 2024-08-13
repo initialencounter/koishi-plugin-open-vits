@@ -108,7 +108,7 @@ class OpenVits extends Vits {
     ctx.command('切换语音 <input:text>', '更换语音角色，每个用户独立', { checkArgCount: true })
       .action(async ({ session }, input) => this.handleSwitch(session as Session<'vits_engine' | 'vits_speakerId'>, input))
     ctx.command('say <input:text>', 'vits语音合成')
-      .option('speaker', '-s <speaker:string>', { fallback: config.speaker_id })
+      .option('speaker', '-s <speaker:number>', { fallback: config.speaker_id })
       .option('lang', '-l <lang:string>')
       .action(async ({ session, options }, input) => this.handleSay(session as Session<'vits_engine' | 'vits_speakerId'>, options, input))
   }
@@ -138,7 +138,11 @@ class OpenVits extends Vits {
       return '在处理请求时发生错误'
     }
   }
-  async handleSay(session: Session<'vits_engine' | 'vits_speakerId'>, options, input: string) {
+  async handleSay(session: Session<'vits_engine' | 'vits_speakerId'>,
+    options: {
+      lang?: string,
+      speaker?: number,
+    }, input: string) {
     if (this.baseConfig.waiting) {
       await session.send(this.t4wefan_text
         ? this.t4wefan_text.waiting
@@ -155,7 +159,7 @@ class OpenVits extends Vits {
     }
 
     const languageCodes: Lang[] = ['zh', 'en', 'fr', 'ja', 'ru', 'de']
-    if (options.lang && languageCodes.includes(options.lang) && this.baseConfig.translator && this.ctx.translator) {
+    if (options.lang && languageCodes.includes(options?.lang as Lang) && this.baseConfig.translator && this.ctx.translator) {
       input = await translateText(this.ctx.translator, input, logger, options.lang) ?? input
     }
 
@@ -166,7 +170,7 @@ class OpenVits extends Vits {
     const speaker_id: number = (options.speaker ?? session.user.vits_speakerId) ?? this.baseConfig.defaultSpeaker
     const engine: VitsEngine = session.user.vits_engine ?? this.baseConfig.defaultEngine
     const result: OpenVits.Result = { input, speaker_id }
-    return await this.baseSay(result, engine)
+    return await this.baseSay(result, engine, options.lang as Lang)
   }
   /**
    *
@@ -174,7 +178,7 @@ class OpenVits extends Vits {
    * @returns
    */
   async say(option: OpenVits.Result): Promise<h> {
-    return await this.baseSay(option, this.baseConfig.defaultEngine)
+    return await this.baseSay(option, this.baseConfig.defaultEngine, null)
   }
 
   /**
@@ -183,7 +187,7 @@ class OpenVits extends Vits {
    * @param engine VITS引擎
    * @returns
    */
-  async baseSay(option: OpenVits.Result, engine: VitsEngine): Promise<h> {
+  async baseSay(option: OpenVits.Result, engine: VitsEngine, optionLang: Lang): Promise<h> {
     let { input, speaker_id } = option
     if (speaker_id === undefined) {
       throw ('speaker_id is required')
@@ -198,7 +202,7 @@ class OpenVits extends Vits {
         text: input,
         id: speaker_id,
         format: this.baseConfig.format,
-        lang: this.baseConfig.lang == 'jp' ? "ja" : this.baseConfig.lang,
+        lang: optionLang ?? this.baseConfig.lang,
         length: this.baseConfig.speech_length,
         text_prompt: this.baseConfig.text_prompt,
         prompt_text: this.baseConfig.prompt_text,
