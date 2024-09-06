@@ -84,6 +84,7 @@ class OpenVits extends Vits {
         }
       }
 
+      this.speaker = config.speaker_id
       // 如果默认引擎不存在默认 speaker, 则自动切换 speaker 为 0
       if (this.speaker > this.speakers[config.defaultEngine].length) {
         this.speaker = 0
@@ -190,7 +191,7 @@ class OpenVits extends Vits {
   async baseSay(option: OpenVits.Result, engine: VitsEngine, optionLang: Lang): Promise<h> {
     let { input, speaker_id } = option
     if (speaker_id === undefined) {
-      throw ('speaker_id is required')
+      speaker_id = this.speaker
     }
     if (input.length > this.max_length) {
       return this.t4wefan_text

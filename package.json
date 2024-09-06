@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-open-vits",
   "description": "vits 插件，支持 `BERT-VITS2` | `GPT-SOVITS` | `HUBERT-VITS` | `VITS` | `W2V2-VITS`",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
